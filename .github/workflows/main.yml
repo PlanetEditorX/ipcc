@@ -7,20 +7,49 @@ jobs:
     runs-on: ubuntu-latest  # 运行环境
 
     steps:
-    - name: Download ipsw
-      run: |
-        wget https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
-        ls
-        
-    - name: Unzip 
+    - name: Install Software
       run: |
         sudo apt update
+        sudo apt install aria2
         sudo apt install unzip
-        mv iPhone14,2_18.5_22F5042g_Restore.ipsw iPhone.zip
+        sudo apt install snapd
+        sudo snap install ipsw
+        
+    - name: Download ipsw
+      run: |
+        echo "下载固件......"
+        aria2c -o iPhone.zip https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
+        ls
+        
+    - name: Unzip ipsw
+      run: |
+        echo "解压固件......"
         unzip iPhone.zip
         ls
 
+    - name: Ipsw aea
+      run: |
+        echo "解密aea......"
+        max_file=$(find . -type f -name "*.dmg.aea" -exec du -b {} + | sort -rn | head -n 1 | awk '{print $2}')
+        echo "Max file：$max_file"
+        ipsw fw aea $max_file
+        stripped_name=$(basename "$max_file" .dmg.aea)
+        echo "CLEAN_NAME=$stripped_name" >> $GITHUB_ENV
 
+
+    - name: Get ipcc
+      run: |
+        echo "获取ipcc......"
+        cd "${{ env.CLEAN_NAME}}"
+        ls
+        cd System
+        ls
+        cd Library
+        ls
+        cd Carrier Bundles
+        ls
+        cd iPhone
+        ls
 
 
 
