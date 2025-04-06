@@ -32,11 +32,12 @@ jobs:
       run: |
         echo "解密aea......"
         max_file=$(find . -type f -name "*.dmg.aea" -exec du -b {} + | sort -rn | head -n 1 | awk '{print $2}')
-        echo "Max file：$max_file"
+        echo "找到最大文件：$max_file"
+        echo "解密中......"
         ipsw fw aea $max_file
         stripped_name=$(basename "$max_file" .dmg.aea)
+        echo "解密后所在文件夹为：$stripped_name"
         echo "CLEAN_NAME=$stripped_name" >> $GITHUB_ENV
-
 
     - name: Get ipcc
       run: |
