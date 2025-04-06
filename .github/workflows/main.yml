@@ -10,9 +10,15 @@ jobs:
     - name: Download ipsw
       run: |
         wget https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
-        mv iPhone14,2_18.5_22F5042g_Restore.ipsw iPhone.ipsw
         ls
-
+        
+    - name: Unzip 
+      run: |
+        sudo apt update
+        sudo apt install unzip
+        mv iPhone14,2_18.5_22F5042g_Restore.ipsw iPhone.zip
+        unzip iPhone.zip
+        ls
 
 
 
