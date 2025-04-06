@@ -30,15 +30,13 @@ jobs:
         
     - name: Get AEA and AEA PEMs
       run: |
-
         echo "获取aea.pem......"
         ipsw extract --fcs-key iPhone.ipsw
-        ls
+        echo "获取aea......"
+        ipsw extract --dmg sys iPhone.ipsw
         
     - name: Ipsw aea
       run: |
-        echo "获取aea......"
-        ipsw extract --dmg sys iPhone.ipsw
         ls
         echo "到达目录${{ env.FOLDER_NAME}}"
         cd "${{ env.FOLDER_NAME}}"
@@ -48,13 +46,7 @@ jobs:
         stripped_name=$(basename "$max_file" .dmg.aea)
         echo "去后缀文件名为：$stripped_name"
         echo "解密中......"
-        echo "使用提取的 PEM 文件解密*.dmg.aea文件"
-        echo "pem: ${stripped_name}.dmg.aea.pem"
-        echo "aea: ${stripped_name}.dmg.aea"
-        ipsw fw aea --pem "${stripped_name}.dmg.aea.pem"
-                    "${stripped_name}.dmg.aea" --output /out
-        ls
-        cd out
+        ipsw fw aea $max_file
         ls
         mv *.dmg out.zip
         unzip out.zip
