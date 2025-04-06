@@ -22,12 +22,6 @@ jobs:
                https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
         ls
         
-    - name: Unzip ipsw
-      run: |
-        echo "解压固件......"
-        unzip iPhone.zip
-        ls
-        
     - name: Get AEA and AEA PEMs
       run: |
 
