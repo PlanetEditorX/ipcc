@@ -1,6 +1,7 @@
 name: Get IPCC
 
 on:
+   push:
    workflow_dispatch:
 jobs:
   build:
@@ -18,9 +19,14 @@ jobs:
     - name: Download ipsw
       run: |
         echo "下载固件......"
-        aria2c --summary-interval=1 --console-log-level=notice --show-console-readout=true -o iPhone.ipsw \
-               https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
+        url="https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw"
+        aria2c --summary-interval=1 --console-log-level=notice --show-console-readout=true -o iPhone.ipsw $url
         ls
+        filename=$(basename "$url")  # 获取文件名部分
+        version=$(echo "$filename" | awk -F'_' '{print $3}')  # 提取22F5042g
+        device=$(echo "$filename" | awk -F'_' '{print $1}')  # 提取iPhone14,2
+        echo "${version}__${device}"  # 输出22F5042g__iPhone14,2
+        echo "FOLDER_NAME=${version}__${device}" >> $GITHUB_ENV
         
     - name: Get AEA and AEA PEMs
       run: |
@@ -33,12 +39,17 @@ jobs:
       run: |
         echo "获取aea......"
         ipsw extract --dmg sys iPhone.ipsw
+        ls
+        cd "${{ env.FOLDER_NAME}}"
+        ls
         max_file=$(find . -type f -name "*.dmg.aea" -exec du -b {} + | sort -rn | head -n 1 | awk '{print $2}')
-        echo "找到最大文件：$max_file"
+        echo "找到文件：$max_file"
         stripped_name=$(basename "$max_file" .dmg.aea)
         echo "去后缀文件名为：$stripped_name"
         echo "解密中......"
         echo "使用提取的 PEM 文件解密*.dmg.aea文件"
+        echo "pem: $("$stripped_name".dmg.aea.pem)"
+        echo "aea: $("$stripped_name".dmg.aea)"
         ipsw fw aea --pem '$("$stripped_name".dmg.aea.pem)'
                     '$("$stripped_name".dmg.aea)' --output /out
         ls
