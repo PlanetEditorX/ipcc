@@ -18,7 +18,7 @@ jobs:
     - name: Download ipsw
       run: |
         echo "下载固件......"
-        aria2c -o iPhone.zip https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
+        aria2c --summary-interval=1 --console-log-level=notice --show-console-readout=true -o iPhone.zip https://updates.cdn-apple.com/2025SpringSeed/fullrestores/072-95155/E567A28F-9337-4228-8CD5-962AA3C32EC3/iPhone14,2_18.5_22F5042g_Restore.ipsw
         ls
         
     - name: Unzip ipsw
