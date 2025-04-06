@@ -40,6 +40,7 @@ jobs:
         echo "获取aea......"
         ipsw extract --dmg sys iPhone.ipsw
         ls
+        echo "到达目录${{ env.FOLDER_NAME}}"
         cd "${{ env.FOLDER_NAME}}"
         ls
         max_file=$(find . -type f -name "*.dmg.aea" -exec du -b {} + | sort -rn | head -n 1 | awk '{print $2}')
@@ -48,10 +49,10 @@ jobs:
         echo "去后缀文件名为：$stripped_name"
         echo "解密中......"
         echo "使用提取的 PEM 文件解密*.dmg.aea文件"
-        echo "pem: $("$stripped_name".dmg.aea.pem)"
-        echo "aea: $("$stripped_name".dmg.aea)"
-        ipsw fw aea --pem '$("$stripped_name".dmg.aea.pem)'
-                    '$("$stripped_name".dmg.aea)' --output /out
+        echo "pem: ${stripped_name}.dmg.aea.pem"
+        echo "aea: ${stripped_name}.dmg.aea"
+        ipsw fw aea --pem "${stripped_name}.dmg.aea.pem"
+                    "${stripped_name}.dmg.aea" --output /out
         ls
         cd out
         ls
